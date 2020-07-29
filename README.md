@@ -38,6 +38,12 @@ The main control logic is based on a 22V10 GAL. This is a device that needs prog
 * Dr Ian Logan's diagnostics ROM (8K): http://www.fruitcake.plus.com/Sinclair/Interface2/Cartridges/Files/ROM_Dumps/System_Test_ROM.bin
 * Phil Ruston's excellent diagnostics ROM V1.5 (16K): http://blog.retroleum.co.uk/electronics-articles/a-diagnostic-rom-image-for-the-zx-spectrum/
 * Brendan Alford's diagnostics ROM (16K): https://github.com/brendanalford/zx-diagnostics/wiki/Firmware
+* Interface 2 ROM games (out there if you look)
+  * Jet Pac (8K)
+  * Psst (16K)
+  * Planetoids (8K)
+  * Space Raiders (8K)
+  * Probably all the others (not tested)
 
 ## Schematic
 
