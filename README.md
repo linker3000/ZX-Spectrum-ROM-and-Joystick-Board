@@ -41,6 +41,6 @@ The main control logic is based on a 22V10 GAL. This is a device that needs prog
 
 ## Schematic
 
-![Image](schematic.JPG)
+![Image](schematic.png)
 
  
