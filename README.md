@@ -43,4 +43,28 @@ The main control logic is based on a 22V10 GAL. This is a device that needs prog
 
 ![Image](schematic.png)
 
+ ## Design Notes
  
+ * U5 and U2 and surrounding circuitry are for the joystick interfaces - omit if not needed. The prototype board pictured does not yet have this circuitry.
+ * The polyfuse (F1) is for overcurrent/fault protection for the ZX Spectrum. Replace with a wire link if deemed not necessary.
+ * The prototype board used 10K resistors instead of 8K2.
+ * D1: Some other online ROM board schematics show this diode (incorrectly) in the emitter leg of the transistor circuit.
+ * See also: https://github.com/linker3000/ZX-Spectrum-Breakout-Board                                 
+ 
+## Bill of materials
+ 
+General notes on the components used for the prototype 
+
+ID	Part | Description 
+----------|----------
+C1|Axial electrolytic capacitor. 100uF 10V or 16V.
+C2-C5|Capacitor 0.1uF 50V ceramic.
+F1|500mA polyfuse SMD 1812 eg: Bourns MF-MSMF050-2 OR through hole eg: Tayda A-2441 - https://www.taydaelectronics.com/circuit-protection/polyswitch-devices/poly-switch-resettable-rxef-series-jk-30v-0-50a.html. 
+Jx|0.1” (2.54mm) header pins. J2 enables/disables the onboard EPROM while also doing the opposite for the ZX Spectrum's internal ROM. 
+Q1|2N3906 or any general purpose PNP transistor.
+8K2 resistors|1% or 5% 1/4W carbon or metal film resistors. 
+D1|Any small signal silicon diode (eg: 1N4148). 
+SW2|BCD rotary switch. eg: APEM PT65-101 or equivalent. 4 x 2-pin jumpers or regular DIP switches could be used.
+U1|GAL22V10 programmed with the .jed code provided here. WinCupl source code is in the .pld file.
+U2, U5|74LS240 OR 74LS640 buffers. J5 and J6 (or wire jumpers) select which chip type is fitted.
+U4|A 28-way ZIF socket.
