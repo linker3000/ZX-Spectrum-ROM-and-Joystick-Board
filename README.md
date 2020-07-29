@@ -10,7 +10,7 @@ These are the design details for a ZX Spectrum expansion board that supports EPR
 
 ![Image](proto2.JPG)
 
-This version of the board has been wire-wrapped. Feel free to use point-to-point wiring if you prefer!
+This version of the board has been wire-wrapped as per the technique described here: https://github.com/linker3000/Z80-Board. Feel free to use point-to-point wiring if you prefer!
 
 ## Features
 
