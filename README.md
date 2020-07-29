@@ -57,7 +57,7 @@ General notes on the components used for the prototype
 
 ID	Part | Description 
 ----------|----------
-C1|Axial electrolytic capacitor. 100uF 10V or 16V.
+C1|100uF 10V or 16V radial electrolytic capacitor. 
 C2-C5|Capacitor 0.1uF 50V ceramic.
 F1|500mA polyfuse SMD 1812 eg: Bourns MF-MSMF050-2 OR through hole eg: Tayda A-2441 - https://www.taydaelectronics.com/circuit-protection/polyswitch-devices/poly-switch-resettable-rxef-series-jk-30v-0-50a.html. 
 Jx|0.1” (2.54mm) header pins. J2 enables/disables the onboard EPROM while also doing the opposite for the ZX Spectrum's internal ROM. 
