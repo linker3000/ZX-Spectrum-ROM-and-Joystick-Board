@@ -14,7 +14,7 @@ This version of the board has been wire-wrapped. Feel free to use point-to-point
 
 ## Features
 
-* The design supports 27x64 (8K), 27x128 (16K) and 27x256 (32K) EPROMS and their EEPROM equivalents (eg: 28C64). The wiring could be adapted to support parallel flash - go for it!
+* The design supports 27x64 (8K), 27x128 (16K) and 27x256 (32K) EPROMS and their EEPROM equivalents (eg: 28C64). The board logic supports static linear ROM mapping - no clever banking or dynamic swapping. The wiring could be adapted to support parallel flash - go for it!
 
 * A rotary BCD DIP switch selects EPROM functionality:
 
@@ -60,7 +60,7 @@ ID	Part | Description
 C1|100uF 10V or 16V radial electrolytic capacitor. 
 C2-C5|Capacitor 0.1uF 50V ceramic.
 F1|500mA polyfuse SMD 1812 eg: Bourns MF-MSMF050-2 OR through hole eg: Tayda A-2441 - https://www.taydaelectronics.com/circuit-protection/polyswitch-devices/poly-switch-resettable-rxef-series-jk-30v-0-50a.html. 
-Jx|0.1” (2.54mm) header pins. J2 enables/disables the onboard EPROM while also doing the opposite for the ZX Spectrum's internal ROM. 
+Jx|0.1” (2.54mm) header pins with 2-pin jumpers. J2 enables/disables the onboard EPROM while also doing the opposite for the ZX Spectrum's internal ROM. 
 Q1|2N3906 or any general purpose PNP transistor.
 8K2 resistors|1% or 5% 1/4W carbon or metal film resistors. 
 D1|Any small signal silicon diode (eg: 1N4148). 
