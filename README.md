@@ -62,6 +62,7 @@ C2-C5|Capacitor 0.1uF 50V ceramic.
 F1|500mA polyfuse SMD 1812 eg: Bourns MF-MSMF050-2 OR through hole eg: Tayda A-2441 - https://www.taydaelectronics.com/circuit-protection/polyswitch-devices/poly-switch-resettable-rxef-series-jk-30v-0-50a.html. 
 Jx|0.1” (2.54mm) header pins with 2-pin jumpers. J2 enables/disables the onboard EPROM while also doing the opposite for the ZX Spectrum's internal ROM. 
 Q1|2N3906 or any general purpose PNP transistor.
+R1|The schematic shows this as 1K but it should be 100R
 8K2 resistors|1% or 5% 1/4W carbon or metal film resistors. 
 D1|Any small signal silicon diode (eg: 1N4148). 
 SW2|BCD rotary switch. eg: APEM PT65-101 or equivalent. 4 x 2-pin jumpers or regular DIP switches could be used.
