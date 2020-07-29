@@ -1,162 +1,1 @@
-Name       specrom;
-Partno     XXXXX;
-Date       19-Jul-2020;
-Revision   01;
-Designer   N. Kendrick;
-Company    Techmarque;
-Assembly   XXXXX;
-Location   XXXXX;
-Device     g22v10;
-
-/***************************************************************
- Licence: CC BY-NC-SA V3  Not for commercial use. 
-          N. Kendrick 2020
- 
- This Code does ROM/size select for a ZX Spectrum ROM board using a  
- 4-bit BCD rotary PCB switch.       
- 
- Switch options are:                                           
-  0 = 8K in 2764                                                    
-  1 = 16K in 27128                                                  
-  2 = 8K in 1st half of 27128                                       
-  3 = 8K in 2nd half of 27128                                       
-  4 = 16K in 1st half of 27256                                               
-  5 = 16K in 2nd half of 27256                                               
-  6 = 8K in 1st quarter of 27256                                            
-  7 = 8K in 2nd quarter of 27256                                            
-  8 = 8K in 3rd quarter of 27256                                            
-  9 = 8K in 4th quarter of 27256                                            
-
- Switch line inputs on GAL should have pullups, and the switch  
- will ground the relevant binary lines to indicate a number, so 
- 4-bit logic for switch values is reversed - e.g. 0 = 1111      
-
- ROMCE controls 'Chip Enable' on the ROM and should be LO for the ROM 
- to be accessed. 
-
- A PNP transistor circuit* is typically used to simultaneously pull 
-
- ROMCS on the Spectrum bus high to disable its internal ROM while 
- presenting LO to ROMCE on the GAL.
-
-'Output Enable' on the ROM is controlled by /MREQ from the spectrum 
- bus.
-
- Bonus feature, JOY_ENx are active low outputs for controlling a
- dual Kempston-type joystick interface based on two LS240 chips*.
-
- *See: https://github.com/linker3000 for more details.
-
-*************************** SPECROM ****************************
-                 ______________
-                |   SPECROM    |
-          SWA---|1  I        24|---Vcc
-          SWB---|2  I      O 23|---JOY_EN2 
-          SWC---|3  I      O 22|---JOY_EN1 
-          SWD---|4  I      I 21|---ROMEN
-           NC---|5  X      O 20|---A14_ROM
-     IORQ_BUS---|6  I      O 19|---A13_ROM 
-       RD_BUS---|7  I      O 18|---ROMCE (To ROM)
-      A13_BUS---|8  I      I 17|---A5_BUS
-      A14_BUS---|9  I      I 16|---A4_BUS
-      A15_BUS---|10 I      I 15|---A3_BUS 
-       A0_BUS---|11 I      I 14|---A2_BUS 
-          GND---|12        I 13|---A1_BUS 
-                |____22V10_____|
-*****************************************************************/
-/**  Inputs  **/
-/* From local circuitry */
-Pin 1  = SWA;   /* BCD switch pins - active low, so 0 = 1111 */
-Pin 2  = SWB;   
-Pin 3  = SWC;   
-Pin 4  = SWD; 
-Pin 21 = ROMEN; /* LO = ROM enabled by jumper */
-
-/* From Spectrum edge connector */
-Pin 6  = IORQ_BUS; /* /IORQ Spectrum bus for joystick reads */
-Pin 7  = RD_BUS;   /* /RD_Bus Spectrum bus - read cycle indicator */
-Pin 8  = A13_BUS;  /* A13 Spectrum bus */
-Pin 9  = A14_BUS;  /* A14 Spectrum bus */
-Pin 10 = A15_BUS;  /* A15 Spectrum bus HI = Not ROM access */
-Pin 11 = A0_BUS;   /* ZX Spectrum address bus A0-A5 */
-Pin 13 = A1_BUS;
-Pin 14 = A2_BUS;
-Pin 15 = A3_BUS;
-Pin 16 = A4_BUS;
-Pin 17 = A5_BUS;
-
-/**  Outputs  **/
-Pin 18 = ROMCE;   /* LO = ROM chip enable. Also connect to ~ROMCS on Spec. bus via transistor */
-Pin 19 = A13_ROM; /* A13 on ROM */
-Pin 20 = A14_ROM; /* A14 on 27x256 and ~PGM on 27x64/27x128 (Always set HI on these two chips */
-Pin 22 = !JOY_EN1; /* Joystick port enable pin JOY1 active LO = port $1F */
-Pin 23 = !JOY_EN2; /* Joystick port enable pin JOY2 active LO = port $20 */
-
-/**  Truth table setup and equations  **/
-FIELD INPUT  = [ROMEN, A15_BUS, A14_BUS, A13_BUS, SWD, SWC, SWB, SWA];  /* Defines input array    */
-FIELD OUTPUT = [ROMCE, A14_ROM, A13_ROM];  /* Defines output array */
-TABLE INPUT => OUTPUT {
-
-/* ROM size and location in chip based on switch position... */
-/* Bits = ROMEN, A15, A14, A13, SWD, SWC, SWB, SWA => ROMCE A14_ROM A13_ROM  */
-/* But first, two conditions which need ROM to be disabled... */
-/* ROMEN is HI so ROM not enabled */
-'b'1XXXXXXX => 'b'111;  
-/* A15 is HI so not a ROM address */
-'b'X1XXXXXX => 'b'111; 
-/* Mapping for 2764 8K chip... */
-'b'00001111 => 'b'010; /* 0 = 8K ROM: A14PGM always HI, A13 Not used */
-'b'00011111 => 'b'111; /* 0 = Not valid */
-'b'00101111 => 'b'111; /* 0 = Not valid */
-'b'00111111 => 'b'111; /* 0 = Not valid */
-/* Mappings for 27128 16K chip... */
-'b'00001110 => 'b'010; /* 1 = 16K ROM: 1st 8K. A14PGM always HI, A13 = 0 */
-'b'00011110 => 'b'011; /* 1 = 16K ROM: 2nd 8K. A14PGM always HI, A13 = 1 */
-'b'00101110 => 'b'111; /* 1 = Not valid */
-'b'00111110 => 'b'111; /* 1 = Not valid */
-'b'00001101 => 'b'010; /* 2 = 8K ROM in 1st half of chip. A14PGM always HI, A13 = 0 */
-'b'00011101 => 'b'111; /* 2 = Not valid */
-'b'00101101 => 'b'111; /* 2 = Not valid */
-'b'00111101 => 'b'111; /* 2 = Not valid */
-'b'00001100 => 'b'011; /* 3 = 8K ROM in 2nd half of chip. A14PGM always HI, A13 = 1 */
-'b'00011100 => 'b'111; /* 3 = Not valid */
-'b'00101100 => 'b'111; /* 3 = Not valid */
-'b'00111100 => 'b'111; /* 3 = Not valid */
-/* Mappings for 27256 32K chip... */
-'b'00001011 => 'b'000; /* 4 = 16K ROM: 1st half in 1st quarter of chip = A14 A13 = 00 */
-'b'00011011 => 'b'001; /* 4 = 16K ROM: 2nd half in 2nd quarter of chip = A14 A13 = 01 */
-'b'00101011 => 'b'111; /* 4 = Not valid */
-'b'00111011 => 'b'111; /* 4 = Not valid */
-'b'00001010 => 'b'010; /* 5 = 16K ROM: 1st half in 3rd quarter of chip = A14 A13 = 10 */
-'b'00011010 => 'b'011; /* 5 = 16K ROM: 2nd half in 4th quarter of chip = A14 A13 = 11 */
-'b'00101010 => 'b'111; /* 5 = Not valid */
-'b'00111010 => 'b'111; /* 5 = Not valid */
-'b'00001001 => 'b'000; /* 6 = 8K ROM in 1st quarter of chip = A14 A13 = 00 */
-'b'00011001 => 'b'111; /* 6 = Not valid */
-'b'00101001 => 'b'111; /* 6 = Not valid */
-'b'00111001 => 'b'111; /* 6 = Not valid */
-'b'00001000 => 'b'001; /* 7 = 8K ROM in 2nd quarter of chip = A14 A13 = 01 */
-'b'00011000 => 'b'111; /* 7 = Not valid */
-'b'00101000 => 'b'111; /* 7 = Not valid */
-'b'00111000 => 'b'111; /* 7 = Not valid */
-'b'00000111 => 'b'010; /* 8 = 8K ROM in 3rd quarter of chip = A14 A13 = 10  */
-'b'00010111 => 'b'111; /* 8 = Not valid */
-'b'00100111 => 'b'111; /* 8 = Not valid */
-'b'00110111 => 'b'111; /* 8 = Not valid */
-'b'00000110 => 'b'011; /* 9 = 8K ROM in 4th quarter of chip = A14 A13 = 11  */
-'b'00010110 => 'b'111; /* 9 = Not valid */
-'b'00100110 => 'b'111; /* 9 = Not valid */
-'b'00110110 => 'b'111; /* 9 = Not valid */
-/* Invalid BCD switch positions - Should not occur unless hex switch used...*/
-/* In any case, disable ROM for these switch values */
-'b'XXXX0101 => 'b'111; /* A (10) */
-'b'XXXX0100 => 'b'111; /* B (11) */
-'b'XXXX0011 => 'b'111; /* C (12) */
-'b'XXXX0010 => 'b'111; /* D (13) */
-'b'XXXX0001 => 'b'111; /* E (14) */
-'b'XXXX0000 => 'b'111; /* F (15) */
-}
-
-/* Joystick interfaces enable on ports $1F and $20 */
-JOY_EN1 = !IORQ_BUS & !RD_BUS & !A5_BUS &  A4_BUS &  A3_BUS &  A2_BUS &  A1_BUS &  A0_BUS; 
-JOY_EN2 = !IORQ_BUS & !RD_BUS &  A5_BUS & !A4_BUS & !A3_BUS & !A2_BUS & !A1_BUS & !A0_BUS;  
+Name       specrom;Partno     XXXXX;Date       19-Jul-2020;Revision   01;Designer   N. Kendrick;Company    Techmarque;Assembly   XXXXX;Location   XXXXX;Device     g22v10;/*************************************************************** Licence: CC BY-NC-SA V3  Not for commercial use.           N. Kendrick 2020  This Code does ROM/size select for a ZX Spectrum ROM board using a   4-bit BCD rotary PCB switch.         Switch options are:                                             0 = 8K in 2764                                                      1 = 16K in 27128                                                    2 = 8K in 1st half of 27128                                         3 = 8K in 2nd half of 27128                                         4 = 16K in 1st half of 27256                                                 5 = 16K in 2nd half of 27256                                                 6 = 8K in 1st quarter of 27256                                              7 = 8K in 2nd quarter of 27256                                              8 = 8K in 3rd quarter of 27256                                              9 = 8K in 4th quarter of 27256                                             Switch line inputs on GAL should have pullups, and the switch   will ground the relevant binary lines to indicate a number, so  4-bit logic for switch values is reversed - e.g. 0 = 1111       ROMCE controls 'Chip Enable' on the ROM and should be LO for the ROM  to be accessed.  A PNP transistor circuit* is typically used to simultaneously pull  ROMCS on the Spectrum bus high to disable its internal ROM while  presenting LO to ROMCE on the GAL.  'Output Enable' on the ROM is controlled by /MREQ from the spectrum  bus. Bonus feature, JOY_ENx are active low outputs for controlling a dual Kempston-type joystick interface based on two LS240 chips*. *See: https://github.com/linker3000 for more details.*************************** SPECROM ****************************                 ______________                |   SPECROM    |          SWA---|1  I        24|---Vcc          SWB---|2  I      O 23|---JOY_EN2           SWC---|3  I      O 22|---JOY_EN1           SWD---|4  I      I 21|---ROMEN           NC---|5  X      O 20|---A14_ROM     IORQ_BUS---|6  I      O 19|---A13_ROM        RD_BUS---|7  I      O 18|---ROMCE (To ROM)      A13_BUS---|8  I      I 17|---A5_BUS      A14_BUS---|9  I      I 16|---A4_BUS      A15_BUS---|10 I      I 15|---A3_BUS        A0_BUS---|11 I      I 14|---A2_BUS           GND---|12        I 13|---A1_BUS                 |____22V10_____|*****************************************************************//**  Inputs  **//* From local circuitry */Pin 1  = SWA;   /* BCD switch pins - active low, so 0 = 1111 */Pin 2  = SWB;   Pin 3  = SWC;   Pin 4  = SWD; Pin 21 = ROMEN; /* LO = ROM enabled by jumper *//* From Spectrum edge connector */Pin 6  = IORQ_BUS; /* /IORQ Spectrum bus for joystick reads */Pin 7  = RD_BUS;   /* /RD_Bus Spectrum bus - read cycle indicator */Pin 8  = A13_BUS;  /* A13 Spectrum bus */Pin 9  = A14_BUS;  /* A14 Spectrum bus */Pin 10 = A15_BUS;  /* A15 Spectrum bus HI = Not ROM access */Pin 11 = A0_BUS;   /* ZX Spectrum address bus A0-A5 */Pin 13 = A1_BUS;Pin 14 = A2_BUS;Pin 15 = A3_BUS;Pin 16 = A4_BUS;Pin 17 = A5_BUS;/**  Outputs  **/Pin 18 = ROMCE;   /* LO = ROM chip enable. Also connect to ~ROMCS on Spec. bus via transistor */Pin 19 = A13_ROM; /* A13 on ROM */Pin 20 = A14_ROM; /* A14 on 27x256 and ~PGM on 27x64/27x128 (Always set HI on these two chips */Pin 22 = !JOY_EN1; /* Joystick port enable pin JOY1 active LO = port $1F */Pin 23 = !JOY_EN2; /* Joystick port enable pin JOY2 active LO = port $20 *//**  Truth table setup and equations  **/FIELD INPUT  = [ROMEN, A15_BUS, A14_BUS, A13_BUS, SWD, SWC, SWB, SWA];  /* Defines input array    */FIELD OUTPUT = [ROMCE, A14_ROM, A13_ROM];  /* Defines output array */TABLE INPUT => OUTPUT {/* ROM size and location in chip based on switch position... *//* Bits = ROMEN, A15, A14, A13, SWD, SWC, SWB, SWA => ROMCE A14_ROM A13_ROM  *//* But first, two conditions which need ROM to be disabled... *//* ROMEN is HI so ROM not enabled */'b'1XXXXXXX => 'b'111;  /* A15 is HI so not a ROM address */'b'X1XXXXXX => 'b'111; /* Mapping for 2764 8K chip... */'b'00001111 => 'b'010; /* 0 = 8K ROM: A14PGM always HI, A13 Not used */'b'00011111 => 'b'111; /* 0 = Not valid */'b'00101111 => 'b'111; /* 0 = Not valid */'b'00111111 => 'b'111; /* 0 = Not valid *//* Mappings for 27128 16K chip... */'b'00001110 => 'b'010; /* 1 = 16K ROM: 1st 8K. A14PGM always HI, A13 = 0 */'b'00011110 => 'b'011; /* 1 = 16K ROM: 2nd 8K. A14PGM always HI, A13 = 1 */'b'00101110 => 'b'111; /* 1 = Not valid */'b'00111110 => 'b'111; /* 1 = Not valid */'b'00001101 => 'b'010; /* 2 = 8K ROM in 1st half of chip. A14PGM always HI, A13 = 0 */'b'00011101 => 'b'111; /* 2 = Not valid */'b'00101101 => 'b'111; /* 2 = Not valid */'b'00111101 => 'b'111; /* 2 = Not valid */'b'00001100 => 'b'011; /* 3 = 8K ROM in 2nd half of chip. A14PGM always HI, A13 = 1 */'b'00011100 => 'b'111; /* 3 = Not valid */'b'00101100 => 'b'111; /* 3 = Not valid */'b'00111100 => 'b'111; /* 3 = Not valid *//* Mappings for 27256 32K chip... */'b'00001011 => 'b'000; /* 4 = 16K ROM: 1st half in 1st quarter of chip = A14 A13 = 00 */'b'00011011 => 'b'001; /* 4 = 16K ROM: 2nd half in 2nd quarter of chip = A14 A13 = 01 */'b'00101011 => 'b'111; /* 4 = Not valid */'b'00111011 => 'b'111; /* 4 = Not valid */'b'00001010 => 'b'010; /* 5 = 16K ROM: 1st half in 3rd quarter of chip = A14 A13 = 10 */'b'00011010 => 'b'011; /* 5 = 16K ROM: 2nd half in 4th quarter of chip = A14 A13 = 11 */'b'00101010 => 'b'111; /* 5 = Not valid */'b'00111010 => 'b'111; /* 5 = Not valid */'b'00001001 => 'b'000; /* 6 = 8K ROM in 1st quarter of chip = A14 A13 = 00 */'b'00011001 => 'b'111; /* 6 = Not valid */'b'00101001 => 'b'111; /* 6 = Not valid */'b'00111001 => 'b'111; /* 6 = Not valid */'b'00001000 => 'b'001; /* 7 = 8K ROM in 2nd quarter of chip = A14 A13 = 01 */'b'00011000 => 'b'111; /* 7 = Not valid */'b'00101000 => 'b'111; /* 7 = Not valid */'b'00111000 => 'b'111; /* 7 = Not valid */'b'00000111 => 'b'010; /* 8 = 8K ROM in 3rd quarter of chip = A14 A13 = 10  */'b'00010111 => 'b'111; /* 8 = Not valid */'b'00100111 => 'b'111; /* 8 = Not valid */'b'00110111 => 'b'111; /* 8 = Not valid */'b'00000110 => 'b'011; /* 9 = 8K ROM in 4th quarter of chip = A14 A13 = 11  */'b'00010110 => 'b'111; /* 9 = Not valid */'b'00100110 => 'b'111; /* 9 = Not valid */'b'00110110 => 'b'111; /* 9 = Not valid *//* Invalid BCD switch positions - Should not occur unless hex switch used...*//* In any case, disable ROM for these switch values */'b'XXXX0101 => 'b'111; /* A (10) */'b'XXXX0100 => 'b'111; /* B (11) */'b'XXXX0011 => 'b'111; /* C (12) */'b'XXXX0010 => 'b'111; /* D (13) */'b'XXXX0001 => 'b'111; /* E (14) */'b'XXXX0000 => 'b'111; /* F (15) */}/* Joystick interfaces enable on ports $1F and $20 */JOY_EN1 = !IORQ_BUS & !RD_BUS & !A5_BUS &  A4_BUS &  A3_BUS &  A2_BUS &  A1_BUS &  A0_BUS; JOY_EN2 = !IORQ_BUS & !RD_BUS &  A5_BUS & !A4_BUS & !A3_BUS & !A2_BUS & !A1_BUS & !A0_BUS;  
