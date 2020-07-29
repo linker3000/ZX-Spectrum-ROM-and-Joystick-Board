@@ -28,7 +28,9 @@ This version of the board has been wire-wrapped as per the technique described h
   * 7 = 8K in 2nd quarter of 27256                                            
   * 8 = 8K in 3rd quarter of 27256                                            
   * 9 = 8K in 4th quarter of 27256   
-
+  
+  NB: Power down the Spectrum and board before inserting or changing chips, and weird things will happen if the switch is changed when everything is powered up! If you do need to change the switch 'mid flow', hit the reset button (if fitted!) to continue.
+  
 * There's a ROM enable/disable jumper
 
 The main control logic is based on a 22V10 GAL. This is a device that needs programming. I used the low-cost TL866II 'universal programmer' (IMPORTANT: Untick 'Encrypt Ch' otherwise the GAL may not program correctly). The .jed file is ready to upload to the programmer. If you want to edit/change the source .pld file, you will need a copy of WinCUPL (free from https://www.microchip.com/design-centers/programmable-logic/spld-cpld/tools/software/wincupl) or another CUPL editor.
