@@ -37,6 +37,8 @@ The main control logic is based on a 22V10 GAL. This is a device that needs prog
 
 ## Tested ROMS
 
+This board should work with any standard 8K or 16K ROM, but for the sake of testing the following have been tried either as the single image in an EPROM, or in the upper/lower half of a larger EPROM. The slowest EPROM to hand was a 32K 250nS (-25) part and that worked fine. 8K images have also been tested in a 28C64 8K EEPROM. 
+
 * Dr Ian Logan's diagnostics ROM (8K): http://www.fruitcake.plus.com/Sinclair/Interface2/Cartridges/Files/ROM_Dumps/System_Test_ROM.bin
 * Phil Ruston's diagnostics ROM V1.5 (16K): http://blog.retroleum.co.uk/electronics-articles/a-diagnostic-rom-image-for-the-zx-spectrum/
 * Brendan Alford's diagnostics ROM (16K): https://github.com/brendanalford/zx-diagnostics/wiki/Firmware
