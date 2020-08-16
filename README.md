@@ -58,7 +58,7 @@ This board should work with any standard 8K or 16K ROM, but for the sake of test
 
  ## Design Notes
  
- * U3 and U4 and surrounding circuitry are for the joystick interfaces - omit if not needed. U3 and U4 can be 74LS240 OR 74LS640 buffers. J5 and J6 (or wire jumpers) select which chip type is fitted.
+ * U3 and U4 and surrounding circuitry are for the joystick interfaces - omit if not needed. U3 and U4 can be 74LS240 OR 74LS640 buffers. J5 and J6 (or wire jumpers) select which chip type is fitted. Due to limited space only the first joystick port was set up on the board pictured.
  * The polyfuse (F1) is for overcurrent/fault protection for the ZX Spectrum. Replace with a wire link if deemed not necessary.
  * The prototype board used 10K resistors instead of 8K2.
  * D1: Some other online ROM board schematics show this diode (incorrectly) in the emitter leg of the transistor circuit.
@@ -76,7 +76,7 @@ F1|500mA polyfuse SMD 1812 eg: Bourns MF-MSMF050-2 OR through hole eg: Tayda A-2
 Jx|0.1” (2.54mm) header pins with 2-pin jumpers. J2 enables/disables the onboard EPROM while also doing the opposite for the ZX Spectrum's internal ROM. 
 Q1|2N3906 or any general purpose PNP transistor.
 R1|The schematic shows this as 1K but it should be 100R
-8K2 resistors|The prototype used 10K resistors. 
+8K2 resistors|The prototype used 10K discrete resistors and a 10K x 8 single in-line resistor module for the joystick port. 
 Resistors|All resistors are 1/4W (0.25W). Tolerance is not important (1%, 2% or 5%) 
 D1|Any small signal silicon diode (eg: 1N4148). 
 SW2|BCD rotary switch. eg: APEM PT65-101 or equivalent. 4 x 2-pin jumpers or regular DIP switches could be used.
