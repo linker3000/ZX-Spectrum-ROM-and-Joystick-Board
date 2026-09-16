@@ -2,7 +2,7 @@
 
 # ZX-Spectrum-ROM-and-Joystick-Board
 
-Based on the ZX Spectrum breakout board: https://github.com/linker3000/ZX-Spectrum-Breakout-Board
+Based on the ZX Spectrum breakout board: [https://codeberg.org/linker3000/ZX-Spectrum-Breakout-Board](https://codeberg.org/linker3000/ZX-Spectrum-Breakout-Board)
 
 These are the design details for a ZX Spectrum expansion board that supports EPROM/ROM devices and also provides the control signals for two Kempston-compatible joystick interfaces. This is a self-build project and these notes are suitable for experienced electronics hobbyists and professional engineers who fancy a bit of DIY making.
 
